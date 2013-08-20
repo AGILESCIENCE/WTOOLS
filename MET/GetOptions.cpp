@@ -10,14 +10,13 @@
 #include "GetOptions.h"
 
 #include <stdio.h>
-#include <string.h> 
 #include <stdlib.h>
 #include <getopt.h>
 
 using namespace std;
 
 
-GetOptions::GetOptions(int argc, char * const argv[]) : inFile(0), outFile(0), res(0), verbose(false) {
+GetOptions::GetOptions(int argc, char * const argv[]) : inFile(0), outFile(0), histSz(0), res(0), verbose(false) {
 	
 	if(argc == 1) {
 		printHelp();
@@ -68,10 +67,11 @@ void GetOptions::printHelp() {
 
 void GetOptions::parseOptions(int argc, char * const argv[]) {
 
-	static char shortOptions[] = "r:i:o:v";
+	static char shortOptions[] = "n:r:i:o:v";
 	
 	static struct option longOptions[] = {
-		{"resolution",	required_argument,	0, 'r'},
+        {"histsize",	optional_argument,	0, 'n'},
+		{"resolution",	optional_argument,	0, 'r'},
 		{"input",		required_argument,	0, 'i'},
 		{"output",		required_argument,	0, 'o'},
 		{"verbose",		no_argument,		0, 'v'},
@@ -88,6 +88,10 @@ void GetOptions::parseOptions(int argc, char * const argv[]) {
 			break;
 		
 		switch(c) {
+                
+            case 'n':
+				histSzPar = string(optarg);
+				break;
 				
 			case 'r':
 				resolutionPar = string(optarg);
@@ -117,10 +121,13 @@ void GetOptions::parseOptions(int argc, char * const argv[]) {
 
 void GetOptions::checkOptions() {
 	
-	// Default resolution
-	if(resolutionPar.empty())
-		resolutionPar = "0.5";
-	
+    // Default histogram size/resolution
+    if(histSzPar.empty()) {
+        if(resolutionPar.empty()) {
+            histSzPar = "100";
+        }
+    }
+    
 	// Input file
 	if(inFileName.empty()) {
 		printf("ERROR : no input file\n");
@@ -137,13 +144,26 @@ void GetOptions::checkOptions() {
 
 void GetOptions::processOptions() {
 	
-	// Histogram resolution
-	res = atof(resolutionPar.c_str());
-	
-	if(verbose) {
-		printf("Histogram\n");
-		printf("\tresolution %10.4e\n", res);
-	}
+	// Histogram size/resolution
+    if(!histSzPar.empty()) {
+        
+        histSz = atoi(histSzPar.c_str());
+        
+        if(verbose) {
+            printf("Histogram\n");
+            printf("\tsize %10d\n", histSz);
+        }
+        
+    } else {
+        
+        res = atof(resolutionPar.c_str());
+    
+        if(verbose) {
+            printf("Histogram\n");
+            printf("\tresolution %10.4e\n", res);
+        }
+    
+    }
 		
 	// Input file
 	MatrixFITSIO *inFileFITS = NULL;

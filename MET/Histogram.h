@@ -41,6 +41,8 @@ public:
 	unsigned int getSize() { return y.size(); };
 
 	// Create from scratch and compute the step to have size bins
+    void create(const gsl_vector *v, double step);
+	void create(const gsl_matrix *m, double step);
 	void create(const gsl_vector *v, unsigned int size);
 	void create(const gsl_matrix *m, unsigned int size);
 	

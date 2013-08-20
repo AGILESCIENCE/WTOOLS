@@ -27,7 +27,8 @@ public:
 	std::string getInputFileName() { return inFileName; };
 	MatrixIO& getOutputFile();
 	std::string getOutputFileName() { return outFileName; };
-	double getResolution() { return res; };
+	unsigned int getHistSize() { return histSz; };
+    double getHistResolution() { return res; };
 	bool outputIsDouble() { return outDouble; };
 	bool isVerbose() { return verbose; };
 	
@@ -39,6 +40,9 @@ protected:
 	std::string outFileName;
 	MatrixIO *outFile;
 	
+    std::string histSzPar;
+	unsigned int histSz;
+    
 	std::string resolutionPar;
 	double res;
 	

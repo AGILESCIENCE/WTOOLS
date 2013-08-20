@@ -28,6 +28,9 @@ public:
 	
 	std::string getOutputFileName() { return outFileName; };
 	
+    unsigned int getMinScaleOfInterest() { return scaleMin; };
+    unsigned int getMaxScaleOfInterest() { return scaleMax; };
+    
 	bool isVerbose() { return verbose; };
     
     bool applyFilterCompSz() { return doFltCmpSz; };
@@ -45,7 +48,8 @@ public:
 protected:
 	
 	std::string scalesOfInterestPar;
-	std::vector<unsigned int> scalesOfInterest;
+	unsigned int scaleMin;
+    unsigned int scaleMax;
 	
 	std::string inFileName;
 	MatrixIO *inFile;
@@ -53,7 +57,7 @@ protected:
 	std::string outFileName;
     
 	bool verbose;
-	
+    
     bool doFltCmpSz;
     std::string fltCmpSzPar;
     unsigned int fltMinCmpSz;

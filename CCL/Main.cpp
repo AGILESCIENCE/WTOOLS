@@ -26,13 +26,19 @@ int main (int argc, char * const argv[]) {
 		// Get input file
 		MatrixIO &inFile = opt.getInputFile();
 		
+        // Index of min/max scale
+        unsigned int minScale   = opt.getMinScaleOfInterest();
+        unsigned int maxScale   = opt.getMaxScaleOfInterest();
+        unsigned int totScaleSz = maxScale - minScale + 1;
+        
 		// Allocate labels
-		Labeling labels(inFile.getPlaneSz(), inFile.getRowSz(), inFile.getColSz());
+		Labeling labels(totScaleSz, inFile.getRowSz(), inFile.getColSz());
 		
 		// Allocate temporary matrix (to be optimized)
 		gsl_matrix *m = gsl_matrix_alloc(inFile.getRowSz(), inFile.getColSz());
 		
 		// Read plane by plane
+        unsigned int j = 0;
         for(unsigned int i = 0; i < inFile.getPlaneSz(); i++) {
 			
 			if(!inFile.read(m)){
@@ -40,15 +46,21 @@ int main (int argc, char * const argv[]) {
                 break;
             }
             
-            int *p = labels.GetPlane(i);
-            if(!p) {
-                printf("ERROR : unable to access label plane\n");
-                break;
+            if(i >= minScale && i <= maxScale) {
+            
+                int *p = labels.GetPlane(j++);
+                if(!p) {
+                    printf("ERROR : unable to access label plane\n");
+                    break;
+                }
+            
+                // Copy the data
+                copyPlane(m, p);
+            
+                // printf("Add scale %d\n", i);
+                
             }
-            
-            // Copy the data
-            copyPlane(m, p);
-            
+                
         }
 		
 		gsl_matrix_free(m);
@@ -59,10 +71,14 @@ int main (int argc, char * const argv[]) {
 		if (n >= 0)
 			printf("\tconnected components labelled\n");
 		
+        // Only for DEBUG
+        string tmpName = opt.getOutputFileName() + ".lbl";
+        labels.saveToFile(tmpName.c_str());
+        
 		// Post process labels
 		ConnectedComponentProcessor cp(labels.colSz, labels.rowSz, labels.nplan, labels.array_value);
         
-        // Apply filte on component size
+        // Apply filter on component size
         if (opt.applyFilterCompSz()) {
             unsigned int minSz, maxSz;
             opt.getFilterCompSz(minSz, maxSz);
@@ -80,7 +96,7 @@ int main (int argc, char * const argv[]) {
 		cp.print();
         
         // Write list for DS9
-        cp.printForDS9(opt.getOutputFileName(), 5);
+        cp.printForDS9(opt.getOutputFileName(), 0);
 		
 	}
 	

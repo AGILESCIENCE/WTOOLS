@@ -1,8 +1,9 @@
 
+#include <stdio.h>
 
 #include "Labeling.h"
 
-#define MAXLABELCONNECTED 1024
+#define MAXLABELCONNECTED 65536
 
 Labeling::Labeling(int nplan, int rowSz, int colSz) : array_value(0) {
 	
@@ -51,9 +52,11 @@ int Labeling::SecondStep3D(int last_i, int last_j, int last_k, unsigned int NewL
 	
 	int MAXLABEL = MAXLABELCONNECTED;
 	unsigned int i, j, k, NumGroup;
-	//Compattazione degli identificatori delle classi di equivalenza
+	
+    //Compattazione degli identificatori delle classi di equivalenza
 	//Passaggio non necessario, ma consente una visualizzazione migliore
-	NumGroup = 1;
+	
+    NumGroup = 1;
 	for(k=1; k<=NewLabel; k++)
 	{
 		int group = C[k];
@@ -94,7 +97,8 @@ int Labeling::LabelingTwoSteps83D()
 {
 
 	int MAXLABEL = MAXLABELCONNECTED;
-	//Versione con soluzione del problema dell'
+	
+    //Versione con soluzione del problema dell'
 	//esaurimento delle label
 
 	//(8-connettivita')
@@ -158,15 +162,17 @@ int Labeling::LabelingTwoSteps83D()
 	
 						if(NewLabel >= MAXLABEL)
 						{
-							//cout << "TOO MUCH LABELS !!!!!"<<endl;
-							NewLabel --;
+                            printf("TOO MUCH LABELS !!!!!\n");
+							
+                            NewLabel --;
 							last_i = i;
-							NewLabel = SecondStep3D(last_i, j, k, NewLabel, C);
+							
+                            NewLabel = SecondStep3D(last_i, j, k, NewLabel, C);
 							for(k=0; k<MAXLABEL; k++) F[k] = 1;
 	
 							if(NewLabel >= MAXLABEL)
 							{
-								//cout << "LABELING ERROR " << endl;
+								printf("LABELING ERROR\n");
 								return -1;
 							}
 						}
@@ -252,4 +258,18 @@ int Labeling::LabelingTwoSteps83D()
 
 	return count;
 
+}
+
+void Labeling::saveToFile(const char *fname) {
+
+    FILE *pFile = fopen(fname, "w");
+    
+    fwrite(&colSz, sizeof(int), 1, pFile);
+    fwrite(&rowSz, sizeof(int), 1, pFile);
+    fwrite(&nplan, sizeof(int), 1, pFile);
+    
+    fwrite(array_value, sizeof(int), colSz*rowSz*nplan, pFile);
+    
+    fclose(pFile);
+    
 }

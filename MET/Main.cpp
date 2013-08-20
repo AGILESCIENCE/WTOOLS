@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h> 
 #include <math.h>
 
 #include "GetOptions.h"
@@ -43,8 +42,14 @@ int main (int argc, char * const argv[]) {
 			if(!inFile.read(m))
 				printf("ERROR : unable to read data\n");
 			
-			Histogram h(m, opt.getResolution());
-			double th = h.getMET();
+            double th = 0;
+            if (opt.getHistSize()) {
+                Histogram h(m, opt.getHistSize());
+                th = h.getMET();
+            } else {
+                Histogram h(m, opt.getHistResolution());
+                th = h.getMET();
+            }
 			
 			if (opt.isVerbose()) {
 				

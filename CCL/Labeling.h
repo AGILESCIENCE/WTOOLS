@@ -15,6 +15,8 @@ public:
 	void SetArray3D(int plan, int row, int col, int value);
 	
 	int* GetPlane(int plan);
+    
+    void saveToFile(const char *fname);
 	
 	//RICERCA REGIONI CONNESSE
 	

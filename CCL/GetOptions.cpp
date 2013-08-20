@@ -57,6 +57,9 @@ void GetOptions::printHelp() {
     
     printf("Usage:\n\n");
     
+    printf("\t-s --scales-of-interest min:max (optional)\n");
+    printf("\t\tSelects the scales to be labelled.\n\n");
+    
     printf("\t-c --component-size min:max (optional)\n");
     printf("\t\tSelects the components with a number of pixels in the specified range.\n\n");
     
@@ -84,10 +87,10 @@ void GetOptions::parseOptions(int argc, char * const argv[]) {
 	static struct option longOptions[] = {
 		{"input",				required_argument,	0, 'i'},
 		{"output",				required_argument,	0, 'o'},
-		{"scales-of-interest",	required_argument,	0, 's'},
+		{"scales-of-interest",	optional_argument,	0, 's'},
 		{"verbose",				no_argument,		0, 'v'},
-        {"component-size",		required_argument,	0, 'c'},
-		{"radius",              required_argument,	0, 'r'},
+        {"component-size",		optional_argument,	0, 'c'},
+		{"radius",              optional_argument,	0, 'r'},
 		{0, 0, 0, 0}
 	};
 	
@@ -110,7 +113,7 @@ void GetOptions::parseOptions(int argc, char * const argv[]) {
 				outFileName = string(optarg);
 				break;
 			
-			case 'f':
+			case 's':
 				scalesOfInterestPar= string(optarg);
 				break;
 				
@@ -179,6 +182,29 @@ void GetOptions::processOptions() {
     if(verbose) {
 		printf("Output\n");
 		printf("\tfile: %s\n", outFileName.c_str());
+	}
+    
+    if (scalesOfInterestPar.empty()) {
+        
+        scaleMin = 0;
+        scaleMax = inFile->getPlaneSz() - 1;
+        
+    } else {
+        
+        Fields fields = getFields(scalesOfInterestPar.c_str());
+        if(fields.empty() || fields.size() != 2) {
+            printf("ERROR : parsing scales of interest \n");
+            return;
+        }
+        
+        scaleMin = atoi(fields[0].c_str());
+        scaleMax = atoi(fields[1].c_str());
+        
+    }
+
+    if(verbose) {
+		printf("Scales\n");
+		printf("\tmin %d max %d\n", scaleMin, scaleMax);
 	}
     
     isValidFlag = true;

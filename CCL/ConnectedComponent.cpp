@@ -117,6 +117,8 @@ ConnectedComponentProcessor::ConnectedComponentProcessor(unsigned int colSz, uns
 				pl++;
 			}
 	
+    // printf("labelSz %d\n", labelSz);
+    
 	// Allocate structures
 	for (unsigned int i = 0; i < labelSz; i++)
 		cc.push_back(ConnectedComponent());
@@ -204,6 +206,8 @@ void ConnectedComponentProcessor::print() {
 	if (cc.size()) {
 		
 		printf("\tnumber %u\n", cc.size());
+        
+        printf("\tcomp.  column   row      plane    radius   size\n");
 		
 		for (unsigned int i = 0; i < cc.size(); i++) {
 			float c, r, p, radius;
@@ -232,13 +236,13 @@ void ConnectedComponentProcessor::printForDS9(const string& fname, float constRa
             for (unsigned int i = 0; i < cc.size(); i++) {
                 float c, r, p, radius;
                 cc.at(i).getBaricentre(c, r, p, radius);
-                fprintf(pFile, "circle(%7.2f,%7.2f,%7.2f)\n", c, r, radius);
+                fprintf(pFile, "circle(%7.2f,%7.2f,%7.2f)\n", c+1, r+1, radius); // DS9 raster coordinates are 1-based
             }
         else
             for (unsigned int i = 0; i < cc.size(); i++) {
                 float c, r, p;
                 cc.at(i).getBaricentre(c, r, p);
-                fprintf(pFile, "circle(%7.2f,%7.2f,%7.2f)\n", c, r, constRadius);
+                fprintf(pFile, "circle(%7.2f,%7.2f,%7.2f)\n", c+1, r+1, constRadius); // DS9 raster coordinates are 1-based
             }
     
     }

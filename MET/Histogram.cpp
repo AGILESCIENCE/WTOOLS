@@ -95,6 +95,17 @@ int Histogram::getCount(gsl_vector *c) {
 	return 0;
 }
 
+void Histogram::create(const gsl_vector *v, double step) {
+    
+    // Set step
+	s = step;
+	
+	// Fill the histogram
+	update(v);
+	
+}
+
+
 void Histogram::create(const gsl_vector *v, unsigned int size) {
 
 	// Get step from size
@@ -108,6 +119,15 @@ void Histogram::create(const gsl_vector *v, unsigned int size) {
 	
 }
 
+void Histogram::create(const gsl_matrix *m, double step) {
+    
+	// Set step
+	s = step;
+	
+	// Fill the histogram
+	update(m);
+	
+}
 
 void Histogram::create(const gsl_matrix *m, unsigned int size) {
 
@@ -255,13 +275,6 @@ double Histogram::getMET() {
 	
 	return th;
 }
-
-/*
- deque<unsigned int>::iterator it;
- it = y.begin();
- while(it != y.end())
- sum += (double)*it++;
- */
 
 void Histogram::print() {
 	printf("Histogram state\n");
