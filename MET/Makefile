@@ -23,7 +23,7 @@ all:$(OBJECTS)
 	$(LD) -o $(EXECUTABLE) $^ $(LFLAGS)
 
 clean:
-	rm -rf *~ *o cwt2
+	rm -rf *~ *o met
 
 %.o: %.cpp
 	$(CC) -c -o $@ $< $(CFLAGS) 
