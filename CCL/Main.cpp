@@ -27,8 +27,8 @@ int main (int argc, char * const argv[]) {
 		MatrixIO &inFile = opt.getInputFile();
 		
         // Index of min/max scale
-        unsigned int minScale   = opt.getMinScaleOfInterest();
-        unsigned int maxScale   = opt.getMaxScaleOfInterest();
+        unsigned int minScale   = opt.getMinScaleOfInterest() - 1;
+        unsigned int maxScale   = opt.getMaxScaleOfInterest() - 1;
         unsigned int totScaleSz = maxScale - minScale + 1;
         
 		// Allocate labels

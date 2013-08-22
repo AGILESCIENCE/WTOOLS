@@ -106,9 +106,9 @@ class Parameters
 				when "cclradmin"
 					@cclradmin = value;
 				when "cclscalemin"
-                                        @cclscalemin = value;
-				hen "cclscalemax"
-                                        @cclscalemax = value;
+                    @cclscalemin = value;
+				when "cclscalemax"
+                    @cclscalemax = value;
 				when "cclradmax"
 					@cclradmax = value;
 				when "methistsize"

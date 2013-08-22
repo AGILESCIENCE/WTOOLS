@@ -16,7 +16,7 @@
 load "Parameters.rb" 
 
 if ARGV[0].to_s == "help" || ARGV[0] == nil || ARGV[0] == "h"
-		system("head -13 " + $0 );
+		system("head -14 " + $0 );
 		exit;
 	end
 	
@@ -31,14 +31,18 @@ p.processInput(2, ARGV)
 #-s scale type:number of scales:min:max
 #type = linear or dyadic (exponential). Dyadic = exponente a 2
 cmd = "./cwt2 -v -w log -s " + p.scaletype.to_s + ":" + p.scalenum.to_s + ":" + p.scalemin.to_s + ":" + p.scalemax.to_s + " -i " + cts.to_s + " -o " + out.to_s + ".wtf "
-puts cmd
-system(cmd)
+if Dir[out.to_s + ".wtf"].size() == 0
+	puts cmd
+	system(cmd)
+end
 
 #Maximum Entropy Thresholding
 #-r resolution
 cmd ="./met -v -n " + p.methistsize.to_s + "  -i " + out.to_s + ".wtf " + " -o " + out.to_s + ".met "
-puts cmd
-system cmd
+if Dir[out.to_s + ".met"].size() == 0
+	puts cmd
+	system cmd
+end
 
 #Connected components labelling 
 cmd = "./ccl -v "
@@ -49,7 +53,7 @@ if p.cclradmin != -1 or p.cclradmax != -1
 	cmd = cmd + " -r " + p.cclradmin.to_s + ":" + p.cclradmax.to_s
 end
 if p.cclscalemin != -1 or p.cclscalemax != -1
-        cmd = cmd + " -r " + p.cclscalemin.to_s + ":" + p.cclscalemax.to_s
+        cmd = cmd + " -s " + p.cclscalemin.to_s + ":" + p.cclscalemax.to_s
 end
 cmd = cmd +  " -i " + out.to_s + ".met > " + out.to_s + ".list "
 puts cmd

@@ -186,8 +186,8 @@ void GetOptions::processOptions() {
     
     if (scalesOfInterestPar.empty()) {
         
-        scaleMin = 0;
-        scaleMax = inFile->getPlaneSz() - 1;
+        scaleMin = 1;
+        scaleMax = inFile->getPlaneSz();
         
     } else {
         
