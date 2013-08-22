@@ -53,7 +53,7 @@ if p.cclradmin != -1 or p.cclradmax != -1
 	cmd = cmd + " -r " + p.cclradmin.to_s + ":" + p.cclradmax.to_s
 end
 if p.cclscalemin != -1 or p.cclscalemax != -1
-        cmd = cmd + " -s " + p.cclscalemin.to_s + ":" + p.cclscalemax.to_s
+    cmd = cmd + " -s " + p.cclscalemin.to_s + ":" + p.cclscalemax.to_s
 end
 cmd = cmd +  " -i " + out.to_s + ".met > " + out.to_s + ".list "
 puts cmd
