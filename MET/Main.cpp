@@ -56,7 +56,7 @@ int main (int argc, char * const argv[]) {
 				double minVal, maxVal;
 				gsl_matrix_minmax(m, &minVal, &maxVal);
 				
-				printf("\t[%05d] min %10.3e max %10.3e th %10.3e\n", i, minVal, maxVal, th);
+				printf("\t[%05d] min %10.3e max %10.3e th %10.3e\n", i+1, minVal, maxVal, th);
 				
 			}
 			

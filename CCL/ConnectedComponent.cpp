@@ -212,7 +212,7 @@ void ConnectedComponentProcessor::print() {
 		for (unsigned int i = 0; i < cc.size(); i++) {
 			float c, r, p, radius;
 			cc.at(i).getBaricentre(c, r, p, radius);
-			printf("\t[%04d] %8.2f %8.2f %8.2f %8.2f %5u\n", i, c, r, p, radius, cc.at(i).getCompSz());
+			printf("\t[%04d] %8.2f %8.2f %8.2f %8.2f %5u\n", i+1, c, r, p, radius, cc.at(i).getCompSz());
 		}
 		
 		

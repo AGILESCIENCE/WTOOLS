@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <string.h> 
 
 #include "GetOptions.h"
 #include "RealIsotropicWaveletFcn.h"
@@ -159,7 +158,7 @@ int main (int argc, char * const argv[]) {
                         
                         ricwt2(wavelet, scales, inFile, outFile);
                         
-                        printf("End/n");
+                        printf("End");
                     
                     }
                     
