@@ -4,10 +4,10 @@ CFITSIOINCDIR=-I$(CFITSIO)/include
 CFITSIOLIBDIR=-L$(CFITSIO)/lib
 CFITSIOLIB=-lcfitsio
 
-#GSLINCDIR=-I$(GSL)/include/
-#GSLLIBDIR=-L$(GSL)/lib/
-GSLINCDIR=-I../lib-gsl/include/
-GSLLIBDIR=-L../lib-gsl/lib/
+GSLINCDIR=-I$(GSL)/include/
+GSLLIBDIR=-L$(GSL)/lib/
+#GSLINCDIR=-I../lib-gsl/include/
+#GSLLIBDIR=-L../lib-gsl/lib/
 GSLLIB=-lgsl -lgslcblas
 
 # Prefix for each installed program. Only ABSOLUTE PATH

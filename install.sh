@@ -15,6 +15,10 @@ if [ -z "$CFITSIO" ] || [ -z $(env | grep "CFITSIO=") ] ; then
     echo "CFITSIO environment variable not set. Abort."
     exit
 fi
+if [ -z "$GSL" ] || [ -z $(env | grep "GSL=") ] ; then
+    echo "GSL environment variable not set. Abort."
+    exit
+fi
 
 CPP_WTOOLS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/C++WTOOLS"
 

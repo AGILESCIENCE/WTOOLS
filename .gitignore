@@ -1,0 +1,15 @@
+C++WTOOLS/CCL/*.o
+C++WTOOLS/CCL/ccl
+
+C++WTOOLS/CWT2/*.o
+C++WTOOLS/CWT2/cwt2
+
+C++WTOOLS/MET/*.o
+C++WTOOLS/MET/met
+
+MatlabWTOOLS/._*
+MatlabWTOOLS/Core/._*
+MatlabWTOOLS/CWT/._*
+MatlabWTOOLS/CWT/*~
+MatlabWTOOLS/CWT/*.jpg
+MatlabWTOOLS/CWT/*.png
