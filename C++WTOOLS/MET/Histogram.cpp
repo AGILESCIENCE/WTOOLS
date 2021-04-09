@@ -215,15 +215,15 @@ double Histogram::getMET() {
 	
 	// Remove zero probs
 	unsigned int size = countNonZeros(p0);
-	gsl_vector *p = gsl_vector_alloc(size);
-	gsl_vector *b = gsl_vector_alloc(size);
+	gsl_vector *p = gsl_vector_calloc(size);
+	gsl_vector *b = gsl_vector_calloc(size);
 	removeZeros(p0, p, b0, b);
 	
 	gsl_vector_free(b0);
 	gsl_vector_free(p0);
 	
 	// Compute inter-class entropy
-	gsl_vector *h = gsl_vector_alloc(size);
+	gsl_vector *h = gsl_vector_calloc(size);
 	
 	// Init first class
 	double p1 = p->data[0];
