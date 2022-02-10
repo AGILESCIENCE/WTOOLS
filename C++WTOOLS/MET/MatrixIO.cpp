@@ -269,19 +269,23 @@ MatrixFITSIO::~MatrixFITSIO() {
 
 void MatrixFITSIO::copyHeaderFrom(const MatrixFITSIO &inFile) {
 	
-	// Get # of keywords of the input file
-	int nkeys = 0;
-	fits_get_hdrspace(inFile.pFile, &nkeys, NULL, &status); 
-	
-	// Copy keywords but skip the standard header keywords (first 9 elements)
-	for(int i = 9; i <= nkeys; i++) { 
+	// Copy a fixed number of records, this should work when using AGILE fits
+	for(int i = 12; i <= 44; i++) { 
 		
-		// Read keyword
+		// Read record
 		char card[FLEN_CARD];
 		if(fits_read_record(inFile.pFile, i, card, &status))
-			break;
+		if(status) {
+			fits_report_error(stderr, status);
+			return;
+		}
 		
+		// Write record
 		fits_write_record(pFile, card, &status);
+		if(status) {
+			fits_report_error(stderr, status);
+			return;
+		}
 		
 	}
 
@@ -359,12 +363,27 @@ bool MatrixFITSIO::write(gsl_matrix *m) {
 			// Get a pointer to the matrix buffer
 			double *pm = m->data;
 			
+			// Allocate a temporary buffer
+			unsigned char* buff = new unsigned char[cols];
+			
 			for(unsigned int i = 0; i < rows; i++) {
+			
+				// Convert double to uint8_t
+				for (unsigned int j = 0; j < cols; j++) {
+					buff[j] = (unsigned char)pm[j];
+				}
 				
 				// Write row
-				fits_write_img(pFile, TDOUBLE, firstElement, cols, pm, &status);
-				if(status)
+				fits_write_img(pFile, TBYTE, firstElement, cols, buff, &status);
+				if(status) {
+				
+					fits_report_error(stderr, status);
+					
+					delete []buff;
+					
 					return false;
+				}
+					
 				
 				// Update matrix pointer
 				pm += m->tda;
@@ -373,6 +392,8 @@ bool MatrixFITSIO::write(gsl_matrix *m) {
 				firstElement += cols;
 				
 			}
+			
+			delete []buff;
 			
 			return true;			
 			
