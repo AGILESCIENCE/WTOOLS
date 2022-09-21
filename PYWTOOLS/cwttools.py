@@ -274,7 +274,7 @@ def get_interclass_entropy(p):
 
 def met2d(gcwt,n):
 
-    mask = np.zeros_like(gcwt, dtype='b')
+    mask = np.zeros_like(gcwt, dtype=np.ubyte)
     vmin = np.zeros(gcwt.shape[0])
     vmax = np.zeros(gcwt.shape[0])
     th = np.zeros(gcwt.shape[0])
