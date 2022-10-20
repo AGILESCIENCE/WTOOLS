@@ -5,7 +5,7 @@ from astropy.io import fits
 from cwttools import met2d
 
 
-def save_fits(mask,in_hdr,bin_number,vmin,vmax,th,fname):
+def save_fits(mask,in_hdr,bin_number,vmin,vmax,th,fname, gcwt):
 
     # Create primary HDU and copy the header from the input file
     out_hdu = fits.PrimaryHDU(mask, in_hdr)
@@ -73,7 +73,7 @@ def main(input, output, bin_number, save_sum, save_or, verbose):
     if verbose:
         print('Save MET mask to: %s' % output)
 
-    save_fits(mask, in_hdr, bin_number, vmin, vmax, th, output)
+    save_fits(mask, in_hdr, bin_number, vmin, vmax, th, output, gcwt)
 
     # Save sum of the MET mask ---------
     if save_sum:
@@ -85,7 +85,7 @@ def main(input, output, bin_number, save_sum, save_or, verbose):
         for i in range(0, mask.shape[0]):
             mask_sum += mask[i]
 
-        save_fits(mask_sum, in_hdr, bin_number, vmin, vmax, th, output+'.sum')
+        save_fits(mask_sum, in_hdr, bin_number, vmin, vmax, th, output+'.sum', gcwt)
 
     # Save or of the MET mask ----------
     if save_or:
@@ -99,7 +99,7 @@ def main(input, output, bin_number, save_sum, save_or, verbose):
 
         mask_or[mask_or > 0] = 1
 
-        save_fits(mask_or, in_hdr, bin_number, vmin, vmax, th, output + '.or')
+        save_fits(mask_or, in_hdr, bin_number, vmin, vmax, th, output + '.or', gcwt)
 
 
 if __name__ == "__main__":
