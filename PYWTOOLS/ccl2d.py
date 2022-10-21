@@ -6,22 +6,7 @@ from astropy.io import fits
 
 DESCRIPTION = 'Connected Components Labelling - Version 2.0'
 
-
-if __name__ == "__main__":
-
-    #----------------------------------
-    # Parse inputs
-    #----------------------------------
-
-    # Configure input arguments
-    my_parser = argparse.ArgumentParser(prog='ccl2d', description=DESCRIPTION)
-    my_parser.add_argument('-i', '--input', action='store', type=str, required=True, help='input file')
-    my_parser.add_argument('-o', '--output', action='store', type=str, required=True, help='ouput file')
-    my_parser.add_argument('-f', '--filtering', action='store', type=str, required=False, help='filtering parameters, a sequence of param:min:max with param = voxel-no, spatial-ext or scale-ext')
-    my_parser.add_argument('-v', '--verbose', action='store_true', help='verbose output')
-
-    # Parse arguments and stop in case of help
-    args = my_parser.parse_args(sys.argv[1:])
+def main(input, output, filtering, verbose):
 
     # Set filtering parameters default values
     min_voxel_no = -1
@@ -32,8 +17,8 @@ if __name__ == "__main__":
     max_scale_ext = -1
 
     # Parse filtering string
-    if args.filtering is not None:
-        tok = args.filtering.split(':')
+    if filtering is not None:
+        tok = filtering.split(':')
         n = 0
         while n < len(tok):
             if tok[n] == 'voxel-no':
@@ -64,11 +49,11 @@ if __name__ == "__main__":
 
     print(DESCRIPTION)
 
-    if args.verbose:
-        print('Load input data from: %s' % args.input)
+    if verbose:
+        print('Load input data from: %s' % input)
 
     try:
-        in_hdul = fits.open(args.input)
+        in_hdul = fits.open(input)
     except Exception as e:
         print('ERROR: loading input data')
         print(e)
@@ -84,14 +69,14 @@ if __name__ == "__main__":
     labels, labels_n = cc3d.connected_components(mask, return_N=True)
     stats = cc3d.statistics(labels)
 
-    if args.verbose:
+    if verbose:
         print('Number of regions %d' % labels_n)
 
     # ----------------------------------
     # Filter regions
     # ----------------------------------
 
-    if args.verbose:
+    if verbose:
         print('Filter regions')
         if min_voxel_no > 0:
             print(' min. voxel no.: %d' % min_voxel_no)
@@ -137,7 +122,7 @@ if __name__ == "__main__":
 
         ct = stats['centroids'][i]
 
-        if args.verbose:
+        if verbose:
             print('[%06d,%06d] %8d %4d %4d %10.2f %10.2f %10.2f' % (sel_labels_no, i, voxel_no, spatial_ext, scale_ext, ct[0], ct[1], ct[2]))
 
         radius = spatial_ext / 2
@@ -148,19 +133,41 @@ if __name__ == "__main__":
     # Save output data
     # ----------------------------------
 
-    if args.verbose:
-            print('Save regions to: %s' % args.output)
+    if verbose:
+            print('Save regions to: %s' % output)
 
-    f = open(args.output, 'w')
+    f = open(output, 'w')
     f.write('#Region file format: DS9 version 4.0\n')
-    f.write('#Input: %s\n' % args.input)
-    if args.filtering is None:
+    f.write('#Input: %s\n' % input)
+    if filtering is None:
         f.write('#Filtering: none\n')
     else:
-        f.write('#Filtering: %s\n' % args.filtering)
+        f.write('#Filtering: %s\n' % filtering)
 
     for reg in reg_list:
         f.write('physical; circle %f %f %f\n' % (reg[0] + 1, reg[1] + 1, reg[2]))
+
+
+
+if __name__ == "__main__":
+
+    #----------------------------------
+    # Parse inputs
+    #----------------------------------
+
+    # Configure input arguments
+    my_parser = argparse.ArgumentParser(prog='ccl2d', description=DESCRIPTION)
+    my_parser.add_argument('-i', '--input', action='store', type=str, required=True, help='input file')
+    my_parser.add_argument('-o', '--output', action='store', type=str, required=True, help='ouput file')
+    my_parser.add_argument('-f', '--filtering', action='store', type=str, required=False, help='filtering parameters, a sequence of param:min:max with param = voxel-no, spatial-ext or scale-ext')
+    my_parser.add_argument('-v', '--verbose', action='store_true', help='verbose output')
+
+    # Parse arguments and stop in case of help
+    args = my_parser.parse_args(sys.argv[1:])
+
+    main(args.input, args.output, args.filtering, args.verbose)
+
+    
 
 
 

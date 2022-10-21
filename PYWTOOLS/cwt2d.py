@@ -8,25 +8,7 @@ from cwttools import MexicanHat2d, cwt2d, icwt2d
 DESCRIPTION = 'Real Isotropic Continuous Wavelet Trasform 2D - Version 3.0'
 
 
-if __name__ == "__main__":
-
-    #----------------------------------
-    # Parse inputs
-    #----------------------------------
-
-    #Configure input arguments
-    my_parser = argparse.ArgumentParser(prog='cwt2d', description=DESCRIPTION)
-    my_parser.add_argument('-w', '--wavelet', action='store', type=str, required=False, default='log',
-                           help='wavelet family, for the time being only Laplacian of Gaussian (log) is implemented')
-    my_parser.add_argument('-s', '--scales', action='store', type=str, required=True,
-                           help='wavelet scales, type:num:min:max, type can be linear or dyadic, size is the number of scales, min is the minimum scale in px, max is the max scale in px')
-    my_parser.add_argument('-i', '--input', action='store', type=str, required=True, help='input file')
-    my_parser.add_argument('-o', '--output', action='store', type=str, required=True, help='ouput file')
-    my_parser.add_argument('-v', '--verbose', action='store_true', help='verbose output')
-
-    # Parse arguments and stop in case of help
-    args = my_parser.parse_args(sys.argv[1:])
-
+def main(wavelet, scales, input, output, verbose):
     # ----------------------------------
     # Configure transform and scales
     # ----------------------------------
@@ -34,21 +16,21 @@ if __name__ == "__main__":
     print(DESCRIPTION)
 
     # Wavelet type
-    if args.verbose:
-        print('Wavelet type: %s' % args.wavelet)
+    if verbose:
+        print('Wavelet type: %s' % wavelet)
 
     psi = None
-    if args.wavelet == 'log':
+    if wavelet == 'log':
         psi = MexicanHat2d()
     else:
         print('ERROR: unsupported wavelet type')
         quit()
 
     # Scales
-    if args.verbose:
-        print('Scales: %s' % args.scales)
+    if verbose:
+        print('Scales: %s' % scales)
 
-    tok = args.scales.split(':')
+    tok = scales.split(':')
     if len(tok) != 4:
         print('ERROR: unable to split scales parameters')
         quit()
@@ -70,7 +52,7 @@ if __name__ == "__main__":
         print('ERROR: unsupported scales type')
         quit()
 
-    if args.verbose:
+    if verbose:
         for i in range(0, len(scales)):
             print('    [%04d] %e' % (i, scales[i]))
 
@@ -78,11 +60,11 @@ if __name__ == "__main__":
     # Load input data
     # ----------------------------------
 
-    if args.verbose:
-        print('Load input data from: %s' % args.input)
+    if verbose:
+        print('Load input data from: %s' % input)
 
     try:
-        in_hdul = fits.open(args.input)
+        in_hdul = fits.open(input)
     except Exception as e:
         print('ERROR: loading input data')
         print(e)
@@ -95,7 +77,7 @@ if __name__ == "__main__":
     # Compute CWT
     # ----------------------------------
 
-    if args.verbose:
+    if verbose:
         print("Compute CWT")
 
     gcwt, gmean = cwt2d(psi, scales, g, 1.0)
@@ -104,14 +86,14 @@ if __name__ == "__main__":
     # Save output data
     # ----------------------------------
 
-    if args.verbose:
-        print('Save CWT to: %s' % args.output)
+    if verbose:
+        print('Save CWT to: %s' % output)
 
     # Create primary HDU and copy the header from the input file
     out_hdu = fits.PrimaryHDU(gcwt, in_hdr)
 
     # Add custom keywords
-    out_hdu.header.set('WTYPE', args.wavelet, 'Wavelet type')
+    out_hdu.header.set('WTYPE', wavelet, 'Wavelet type')
     out_hdu.header.set('WSCALE', stype, 'Wavelet scale')
     out_hdu.header.set('WSIZE', snum, 'Number of scales considered')
     out_hdu.header.set('WSMIN', smin, 'Min scale')
@@ -126,8 +108,30 @@ if __name__ == "__main__":
     out_hdu.header.add_comment('Wavelet transform specific parameters', 'WTYPE')
 
     # Save
-    out_hdu.writeto(args.output, overwrite=True)
+    out_hdu.writeto(output, overwrite=True)
 
     print("End")
+
+
+if __name__ == "__main__":
+
+    #----------------------------------
+    # Parse inputs
+    #----------------------------------
+
+    #Configure input arguments
+    my_parser = argparse.ArgumentParser(prog='cwt2d', description=DESCRIPTION)
+    my_parser.add_argument('-w', '--wavelet', action='store', type=str, required=False, default='log',
+                           help='wavelet family, for the time being only Laplacian of Gaussian (log) is implemented')
+    my_parser.add_argument('-s', '--scales', action='store', type=str, required=True,
+                           help='wavelet scales, type:num:min:max, type can be linear or dyadic, size is the number of scales, min is the minimum scale in px, max is the max scale in px')
+    my_parser.add_argument('-i', '--input', action='store', type=str, required=True, help='input file')
+    my_parser.add_argument('-o', '--output', action='store', type=str, required=True, help='ouput file')
+    my_parser.add_argument('-v', '--verbose', action='store_true', help='verbose output')
+
+    # Parse arguments and stop in case of help
+    args = my_parser.parse_args(sys.argv[1:])
+
+    main(args.wavelet, args.scales, args.input, args.output, args.verbose)
 
 
